@@ -14,13 +14,13 @@ namespace ConsoleChElemente
             Name = name;
             Symbol = symbol;
         }
-        public int Ordnungszahl { get; set; }
-        public string Name { get; set; }
-        public string Symbol { get; set; }
+        public int Ordnungszahl { get; }
+        public string Name { get; }
+        public string Symbol { get; }
 
         public override string ToString()
         {
-            return $"{Symbol}, {Ordnungszahl}, {Name}, {Zustand}";
+            return $" {Ordnungszahl,3} {Symbol,-4} {Name,-20} {Zustand}";
         }
     }
 }

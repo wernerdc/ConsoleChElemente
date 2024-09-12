@@ -9,7 +9,7 @@ namespace ConsoleChElemente
     internal class ChZustand
     {
         private static string[] s_zustände = [ "Unbekannt", "Feststoff", "Flüssigkeit", "Gas" ];
-        private static ConsoleColor[] s_farben = [ ConsoleColor.DarkGray, ConsoleColor.Black, ConsoleColor.Blue, ConsoleColor.DarkRed ];
+        private static ConsoleColor[] s_farben = [ ConsoleColor.Gray, ConsoleColor.Black, ConsoleColor.DarkBlue, ConsoleColor.DarkRed ];
         
         public ChZustand(int nZustand)
         {
@@ -17,8 +17,8 @@ namespace ConsoleChElemente
             Farbe = s_farben[nZustand];
         }
         
-        public string Zustand { get; protected set; }
-        public ConsoleColor Farbe { get; protected set; }
+        public string Zustand { get; }
+        public ConsoleColor Farbe { get; }
         public static string[] Zustände
         {
             get { return s_zustände; }

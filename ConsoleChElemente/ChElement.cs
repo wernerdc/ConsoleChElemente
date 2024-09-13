@@ -8,7 +8,7 @@ namespace ConsoleChElemente
 {
     internal class ChElement : ChZustand
     {
-        public ChElement(int ordnungszahl, string name, string symbol, int zustand = 0) : base(zustand)
+        public ChElement(int ordnungszahl, string name, string symbol, int zustand) : base(zustand)
         {
             Ordnungszahl = ordnungszahl;
             Name = name;
@@ -20,7 +20,7 @@ namespace ConsoleChElemente
 
         public override string ToString()
         {
-            return $" {Ordnungszahl,3} {Symbol,-4} {Name,-20} {Zustand}";
+            return $" {Ordnungszahl,3} {Symbol,-2} {Name,-20} {Zustand}";
         }
     }
 }

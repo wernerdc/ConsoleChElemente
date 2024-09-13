@@ -9,9 +9,13 @@ namespace ConsoleChElemente
         static void Main(string[] args)
         {
             // test data
-            s_elements.Add(1, new ChElement(1, "Helium", "H", 3));
-            s_elements.Add(4, new ChElement(4, "HmmJa", "HJ", 0));
-            s_elements.Add(100, new ChElement(100, "SoilentGreen", "SGr", 1));
+            s_elements.Add(1, new ChElement(1, "Wasserstoff", "H", 3));
+            s_elements.Add(2, new ChElement(2, "Lithium", "Li", 1));
+            s_elements.Add(3, new ChElement(3, "Natrium", "Na", 1));
+            s_elements.Add(80, new ChElement(80, "Quecksilber", "Hg", 2));
+            s_elements.Add(35, new ChElement(35, "Brom", "Br", 2));
+            s_elements.Add(202, new ChElement(202, "HmmJa", "HJ", 0));
+            s_elements.Add(180, new ChElement(180, "SoilentGreen", "SG", 1));
             s_elements.Add(10, new ChElement(10, "Glibber", "Gl", 2));
 
             bool appRunning = true;
@@ -28,8 +32,7 @@ namespace ConsoleChElemente
                 Console.WriteLine("[4] Element mit Ordnungsnummer bearbeiten");
                 Console.WriteLine("[5] Element mit Ordnungsnummer löschen");
                 
-                Console.Write("Aktion auswählen: ");
-                int option = EnterNumber(1, 5);
+                int option = ReadNumber("Aktion auswählen: ", 1, 5);
                 Console.WriteLine();
 
                 switch (option)
@@ -38,29 +41,27 @@ namespace ConsoleChElemente
                         ShowAll(); 
                         break;
                     case 2:
-                        Console.Write("Ordnungszahl des Elements eingeben: ");
-                        ShowElement(EnterNumber(1, 1000)); 
+                        ShowElement(ReadNumber("Ordnungszahl des Elements eingeben: ", 1, 1000)); 
                         break;
                     case 3:
-                        AddElement(EnterElement());
+                        AddElement(ReadElement(false));
                         break;
                     case 4:
-                        EditElement(EnterElement());
+                        EditElement(ReadElement(true));
                         break;
                     case 5:
-                        Console.Write("Ordnungszahl des Elements eingeben: ");
-                        DelElement(EnterNumber(1, 1000));
+                        DelElement(ReadNumber("Ordnungszahl des Elements eingeben: ", 1, 1000));
                         break;
                     default:
                         break;
                 }
 
 
-                Console.Write("\n\nProgramm beenden (E)? ");
+                Console.Write("\n\nProgramm beenden (e)? ");
                 try
                 {
                     string exitApp = Console.ReadLine();
-                    if (exitApp.ToLower() == "E")
+                    if (exitApp.ToLower() == "e")
                     {
                         appRunning = false;
                     }
@@ -72,74 +73,88 @@ namespace ConsoleChElemente
             }
         }
 
-        private static ChElement EnterElement()
+        private static ChElement ReadElement(bool needExistingElement)
         {
-            Console.Write("Ordnungszahl des Elements eingeben: ");
-            int oZahl = EnterNumber(1, 1000);
+            int oZahl = 0;
+            while (oZahl == 0)
+            {
+                oZahl = ReadNumber("Ordnungszahl des Elements eingeben: ", 1, 1000);
+                if (needExistingElement)
+                {
+                    if (!s_elements.ContainsKey(oZahl))
+                    {
+                        ShowErrorMessage($"Fehler: Element mit Ordnungszahl {oZahl} nicht gefunden!");
+                        oZahl = 0;
+                    }
+                    else
+                    {
+                        ShowElement(oZahl);
+                    }
+                }
+                else
+                {
+                    if (s_elements.ContainsKey(oZahl))
+                    {
+                        ShowErrorMessage($"Fehler: Element mit Ordnungszahl {oZahl} existiert bereits!");
+                        ShowElement(oZahl);
+                        oZahl = 0;
+                    }
+                }
+            }
 
-            Console.Write("Name des Elements eingeben:         ");
-            string name = EnterString();
-            
-            Console.Write("Symbol des Elements eingeben:       ");
-            string symbol = EnterString();
+            string name = ReadString("Name des Elements eingeben:         ");
+            string symbol = ReadString("Symbol des Elements eingeben:       ");
             
             string[] zustände = ChZustand.Zustände;
             for (int i = 0; i < zustände.Length; i++)
             {
                 Console.WriteLine($"[{i}] {zustände[i]}");
             }
-            Console.Write("Zustand des Elements auswählen:     ");
-            int zustand = EnterNumber(0, 3);
+            int zustand = ReadNumber("Zustand des Elements auswählen:     ", 0, 3);
 
             return new ChElement(oZahl, name, symbol, zustand);
         }
 
-
-        private static void ShowErrortMessage(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine($"\n{msg}\n");
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-
-        private static int EnterNumber(int min, int max)
+        private static int ReadNumber(string msg, int min, int max)
         {
             int number = -1;
             while (number == -1)
             {
                 try
                 {
+                    Console.Write(msg);
                     number = int.Parse(Console.ReadLine());
-                    if (number < min || number > max)
+                    if ((number < min) || (number > max))
                     {
                         number = -1;
-                        ShowErrortMessage($"Ungültige Eingabe! [{min}-{max}]");
+                        ShowErrorMessage($"Ungültige Eingabe! [{min}-{max}]");
                     }
                 }
                 catch
                 {
-                    ShowErrortMessage($"Ungültige Eingabe! [{min}-{max}]");
+                    ShowErrorMessage($"Ungültige Eingabe! [{min}-{max}]");
                 }
             }
             return number;
         }
         
-        private static string EnterString()
+        private static string ReadString(string msg)
         {
             string str = "";
             while (str == "")
             {
                 try
                 {
+                    Console.Write(msg);
                     str = Console.ReadLine();
-                    if (str == "" || str == null)
+                    if ((str == "") || (str == null))
                     {
-                        ShowErrortMessage("Ungültige Eingabe! ");
+                        ShowErrorMessage("Ungültige Eingabe! ");
                     }
                 }
                 catch
                 {
-                    ShowErrortMessage("Ungültige Eingabe! ");
+                    ShowErrorMessage("Ungültige Eingabe! ");
                 }
             }
             return str;
@@ -149,7 +164,7 @@ namespace ConsoleChElemente
         {
             if (s_elements.ContainsKey(element.Ordnungszahl))
             {
-                Console.WriteLine("Fehler: Element mit dieser Ordnungszahl ist bereits vorhanden!");
+                ShowErrorMessage("Fehler: Element mit dieser Ordnungszahl ist bereits vorhanden!");
                 return;     // exit method
             }
 
@@ -166,7 +181,7 @@ namespace ConsoleChElemente
             }
             else
             {
-                Console.WriteLine("Fehler: Element mit dieser Ordnungszahl nicht gefunden!");
+                ShowErrorMessage("Fehler: Element mit dieser Ordnungszahl nicht gefunden!");
             }
         }
 
@@ -179,7 +194,7 @@ namespace ConsoleChElemente
             }
             else
             {
-                Console.WriteLine("Fehler: Element mit dieser Ordnungszahl nicht gefunden!");
+                ShowErrorMessage("Fehler: Element mit dieser Ordnungszahl nicht gefunden!");
             }
         }
 
@@ -187,11 +202,11 @@ namespace ConsoleChElemente
         {
             if (s_elements.ContainsKey(oZahl))
             {
-                WriteElementToConsole(s_elements[oZahl]);
+                WriteToConsole(s_elements[oZahl]);
             }
             else
             {
-                Console.WriteLine("Fehler: Element mit dieser Ordnungszahl nicht gefunden!");
+                ShowErrorMessage("Fehler: Element mit dieser Ordnungszahl nicht gefunden!");
             }
         }
         
@@ -199,11 +214,18 @@ namespace ConsoleChElemente
         {
             foreach (var item in s_elements.OrderBy(e => e.Key))
             {
-                WriteElementToConsole(item.Value);
+                WriteToConsole(item.Value);
             }
         }
 
-        private static void WriteElementToConsole(ChElement element)
+        private static void ShowErrorMessage(string msg)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine($"\n{msg}\n");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        private static void WriteToConsole(ChElement element)
         {
             Console.ForegroundColor = element.Farbe;
             Console.WriteLine(element.ToString());
